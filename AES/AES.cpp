@@ -1,6 +1,9 @@
 #include <iostream>
+#include "AESEngine.h"
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	AESEngine aesEngine;
+	aesEngine.start();
+	getchar();
 }

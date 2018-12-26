@@ -107,6 +107,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +154,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AES.cpp" />
+    <ClCompile Include="AESEngine.cpp" />
+    <ClCompile Include="Configuration.cpp" />
+    <ClCompile Include="DecryptionService.cpp" />
+    <ClCompile Include="EncryptionService.cpp" />
+    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="Key.cpp" />
+    <ClCompile Include="SettingsService.cpp" />
+    <ClCompile Include="Text.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AESEngine.h" />
+    <ClInclude Include="Configuration.h" />
+    <ClInclude Include="DecryptionService.h" />
+    <ClInclude Include="EncryptionService.h" />
+    <ClInclude Include="FileService.h" />
+    <ClInclude Include="Key.h" />
+    <ClInclude Include="SettingsService.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
