@@ -84,7 +84,7 @@ void AesBase::loadBlock(Text& input,  int block_num)
 	{
 		for(int j=0; j<4; j++)
 		{
-			if(block_num>input.getSize())
+			if(byte_num<input.getSize())
 			{
 				block[i][j] = input.getByte(byte_num);
 				byte_num++;
