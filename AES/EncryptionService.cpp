@@ -12,7 +12,7 @@ EncryptionService& EncryptionService::getInstance()
 Text EncryptionService::encrypt(Key key, Text& text, int numberOfThreads)
 {
 	Text result;
-	int currentBlock = 0;
+	/*int currentBlock = 0;
 	int numberOfBlocks = 100;
 	while (currentBlock < numberOfBlocks) {
 		byte block[4][4];
@@ -30,7 +30,7 @@ Text EncryptionService::encrypt(Key key, Text& text, int numberOfThreads)
 		addRoundKey(key.size(), block);
 
 		currentBlock++;
-	}
+	}*/
 	return result;
 }
 

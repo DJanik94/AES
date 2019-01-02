@@ -22,10 +22,17 @@ void SettingsService::load(Key& key, Text& text)
 
 	bool mode = 1;
 	int numberOfThread = 1;
-	string pathToKey;
-	string pathToText;
+	string pathToKey = "Files/key.txt";
+	string pathToText = "Files/text.txt";
+
 
 	//cin from user
+
+
+	std::tuple<Text*, Key*> data = fileService->loadFiles(pathToText, pathToKey);
+
+	text = *std::get<0>(data);
+	key = *std::get<1>(data);
 
 	configuration->setMode(mode);
 	configuration->setNumberOfThreads(numberOfThread);

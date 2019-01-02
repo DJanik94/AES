@@ -7,7 +7,7 @@ int AesBase::getSBoxValue(int n)
 	return sbox[n];
 }
 
-void AesBase::keyExpansion()
+/*void AesBase::keyExpansion()
 {
 	int i, j;
 	byte temp[4], k;
@@ -63,9 +63,9 @@ void AesBase::keyExpansion()
 		round_key[3][j] = round_key[3][j - Nk] ^ temp[3];
 		j++;
 	}
-}
+}*/
 
-void AesBase::addRoundKey(int round, byte block[4][4])
+void AesBase::addRoundKey(int round)
 {
 	int i, j;
 	for (i = 0; i < 4; i++) {
@@ -73,15 +73,42 @@ void AesBase::addRoundKey(int round, byte block[4][4])
 			block[i][j] ^= round_key[i][round * 4 + j];
 		}
 	}
+
+	
 }
 
-bool AesBase::loadBlock(Text& input, byte block[4][4], int block_num)
+void AesBase::loadBlock(Text& input,  int block_num)
 {
-
+	int byte_num = 16 * block_num;
+	for(int i=0; i<4; i++)
+	{
+		for(int j=0; j<4; j++)
+		{
+			if(block_num>input.getSize())
+			{
+				block[i][j] = input.getByte(byte_num);
+				byte_num++;
+			}
+			else
+			{
+				block[i][j] = 0x00;
+				byte_num++;
+			}
+		}
+	}
 }
 
-void AesBase::saveBlock(byte * dest, byte block[4][4], int block_num)
+void AesBase::saveBlock(int block_num)
 {
+	int n = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			output[block_num + n] = block[i][j];
+			n++;
+		}
+	}
 }
 
 void AesBase::loadKeyToMatrix(Text & key_file)

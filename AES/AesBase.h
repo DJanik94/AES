@@ -3,6 +3,13 @@
 #include "Text.h"
 //#include <string>
 
+// xtime is a macro that finds the product of {02} and the argument to xtime modulo {1b}  
+#define xtime(x)   ((x<<1) ^ (((x>>7) & 1) * 0x1b))
+
+// Multiply is a macro used to multiply numbers in the field GF(2^8)
+#define Multiply(x,y) (((y & 1) * x) ^ ((y>>1 & 1) * xtime(x)) ^ ((y>>2 & 1) * xtime(xtime(x))) ^ ((y>>3 & 1) * xtime(xtime(xtime(x)))) ^ ((y>>4 & 1) * xtime(xtime(xtime(xtime(x))))))
+
+
 class AesBase
 {
 protected:
@@ -15,7 +22,7 @@ protected:
 	byte round_key[4][60];
 	int Nr = 0;
 	int Nk = 0;
-
+	byte* output;
 	byte state[4][4];
 	const int rcon[255] = {
 		// 0     1     2     3     4     5     6     7     8     9     A     B     C     D     E     F
@@ -54,11 +61,12 @@ protected:
 		0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf, //E
 		0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }; //F
 	int getSBoxValue(int n);
-	void keyExpansion();
-	void addRoundKey(int round, byte block[4][4]);
-	bool loadBlock(Text& input, byte block[4][4], int block_num);
-	void saveBlock(byte* dest, byte block[4][4], int block_num);
+	//void keyExpansion();
+	void addRoundKey(int round);
+	void loadBlock(Text& input, int block_num);
+	void saveBlock(int block_num);
 	void loadKeyToMatrix(Text& key_file);
+
 public:
 	AesBase();
 	~AesBase();

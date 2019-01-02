@@ -9,6 +9,7 @@ class AESEngine
 {
 	SettingsService *settingsService;
 	Configuration *configuration;
+	FileService *fileService;
 	Key key;
 	Text text;
 

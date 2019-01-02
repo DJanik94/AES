@@ -54,11 +54,11 @@
     <ClCompile Include="DecryptionService.cpp">
       <Filter>Source Files\service</Filter>
     </ClCompile>
+    <ClCompile Include="AesBase.cpp">
+      <Filter>Source Files\service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AESEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Configuration.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
@@ -82,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="Types.h">
       <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="AESEngine.h">
+      <Filter>Header Files\service</Filter>
+    </ClInclude>
+    <ClInclude Include="AesBase.h">
+      <Filter>Header Files\service</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

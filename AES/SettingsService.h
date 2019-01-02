@@ -6,6 +6,8 @@
 class SettingsService
 {
 	FileService *fileService;
+	Text* text_;
+	Key* key_;
 
 	SettingsService();
 
