@@ -21,6 +21,7 @@ void AESEngine::start()
 		DecryptionService *decryptionService = &DecryptionService::getInstance();
 		byte* result = decryptionService->decrypt(key, text, configuration->getNumberOfThreads());
 		fileService->saveFile(result, "Files/result.txt");
+		int xx = 0;
 	}
 
 }

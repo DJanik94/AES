@@ -48,7 +48,8 @@ void Key::prepareRoundKeys()
 {
 	int i, j;
 	unsigned char temp[4], k;
-
+	Nr = 10;
+	Nk = 4;
 	// The first round key is the key itself.
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {

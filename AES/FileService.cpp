@@ -63,8 +63,9 @@ int FileService::loadFile(std::string file_name)
 
 void FileService::saveFile(byte* content, std::string file_name) const
 {
+	
 	std::ofstream file(file_name.c_str(), std::ios::binary);
-
+	char* test = (char*)content;
 	file.write((char*)content, size);
 	file.close();
 }

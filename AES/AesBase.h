@@ -20,7 +20,7 @@ protected:
 	byte key[4][4];
 	byte block[4][4];
 	byte round_key[4][60];
-	int Nr = 0;
+	int Nr = 128;
 	int Nk = 0;
 	byte* output;
 	byte state[4][4];
