@@ -86,19 +86,21 @@ void EncryptionService::shiftRows()
 
 void EncryptionService::cipher()
 {
-	for (auto round = numberOfRounds - 1; round > 0; round--)
+	addRoundKey(0);
+
+	for (auto round = 1; round<numberOfRounds; round++)
 	{
-		shiftRows();
 		subBytes();
-		addRoundKey(round);
+		shiftRows();
 		mixColumns();
+		addRoundKey(round);
 	}
 
 	// The last round is given below.
 	// The MixColumns function is not here in the last round.
-	shiftRows();
 	subBytes();
-	addRoundKey(0);
+	shiftRows();
+	addRoundKey(numberOfRounds);
 
 }
 

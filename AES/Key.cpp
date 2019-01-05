@@ -32,6 +32,14 @@ void Key::prepareRoundKeys()
 	int n = size / 4; // key length in 32-bit words
 	int r = n + 6; // number of AES rounds
 	unsigned char temp[4], k;
+
+	/*for (int h = 0; h < 4; h++)
+	{
+		if (round_key[h] != nullptr) delete[] round_key[h];
+		round_key[h] = new byte[4*(r + 1)];
+	}*/
+
+	
 	// The first round key is the key itself.
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {
