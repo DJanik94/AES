@@ -1,25 +1,22 @@
 ﻿#include "DecryptionService.h"
 #include "Key.h"
 
-int DecryptionService::getSBoxDecrypt(int n)
-{
-	return rsbox_decrypt[n];
-}
+
 
 void DecryptionService::mixColumns()
 {
 	unsigned char a, b, c, d;
 	for (int i = 0; i < 4; i++)
 	{
-		a = block[0][i];
-		b = block[1][i];
-		c = block[2][i];
-		d = block[3][i];
+		a = state[0][i];
+		b = state[1][i];
+		c = state[2][i];
+		d = state[3][i];
 
-		block[0][i] = Multiply(a, 0x0e) ^ Multiply(b, 0x0b) ^ Multiply(c, 0x0d) ^ Multiply(d, 0x09);
-		block[1][i] = Multiply(a, 0x09) ^ Multiply(b, 0x0e) ^ Multiply(c, 0x0b) ^ Multiply(d, 0x0d);
-		block[2][i] = Multiply(a, 0x0d) ^ Multiply(b, 0x09) ^ Multiply(c, 0x0e) ^ Multiply(d, 0x0b);
-		block[3][i] = Multiply(a, 0x0b) ^ Multiply(b, 0x0d) ^ Multiply(c, 0x09) ^ Multiply(d, 0x0e);
+		state[0][i] = Multiply(a, 0x0e) ^ Multiply(b, 0x0b) ^ Multiply(c, 0x0d) ^ Multiply(d, 0x09);
+		state[1][i] = Multiply(a, 0x09) ^ Multiply(b, 0x0e) ^ Multiply(c, 0x0b) ^ Multiply(d, 0x0d);
+		state[2][i] = Multiply(a, 0x0d) ^ Multiply(b, 0x09) ^ Multiply(c, 0x0e) ^ Multiply(d, 0x0b);
+		state[3][i] = Multiply(a, 0x0b) ^ Multiply(b, 0x0d) ^ Multiply(c, 0x09) ^ Multiply(d, 0x0e);
 	}
 
 }
@@ -31,7 +28,7 @@ void DecryptionService::subBytes()
 	{
 		for (auto j = 0; j < 4; j++)
 		{
-			block[i][j] = getSBoxDecrypt(block[i][j]);
+			state[i][j] = AESLookupTable::getInvSBoxValue(state[i][j]);
 		}
 	}
 	
@@ -42,41 +39,40 @@ void DecryptionService::shiftRows()
 	byte temp;
 
 	// Rotate first row 1 columns to right
-	temp = block[1][3];
-	block[1][3] = block[1][2];
-	block[1][2] = block[1][1];
-	block[1][1] = block[1][0];
-	block[1][0] = temp;
+	temp = state[1][3];
+	state[1][3] = state[1][2];
+	state[1][2] = state[1][1];
+	state[1][1] = state[1][0];
+	state[1][0] = temp;
 
 	// Rotate second row 2 columns to right
-	temp = block[2][0];
-	block[2][0] = block[2][2];
-	block[2][2] = temp;
+	temp = state[2][0];
+	state[2][0] = state[2][2];
+	state[2][2] = temp;
 
-	temp = block[2][1];
-	block[2][1] = block[2][3];
-	block[2][3] = temp;
+	temp = state[2][1];
+	state[2][1] = state[2][3];
+	state[2][3] = temp;
 
 	// Rotate third row 3 columns to right
-	temp = block[3][0];
-	block[3][0] = block[3][1];
-	block[3][1] = block[3][2];
-	block[3][2] = block[3][3];
-	block[3][3] = temp;
+	temp = state[3][0];
+	state[3][0] = state[3][1];
+	state[3][1] = state[3][2];
+	state[3][2] = state[3][3];
+	state[3][3] = temp;
 
 	
 }
 
 void DecryptionService::decipher()
 {
-	int round;
 
-	addRoundKey(Nr);
+	addRoundKey(numberOfRounds);
 
-	// There will be Nr rounds.
-	// The first Nr-1 rounds are identical.
-	// These Nr-1 rounds are executed in the loop below.
-	for (round = Nr - 1; round > 0; round--)
+	// There will be numberOfRounds rounds.
+	// The first numberOfRounds-1 rounds are identical.
+	// These numberOfRounds-1 rounds are executed in the loop below.
+	for (auto round = numberOfRounds - 1; round > 0; round--)
 	{
 		shiftRows();
 		subBytes();
@@ -101,17 +97,17 @@ DecryptionService& DecryptionService::getInstance()
 
 byte* DecryptionService::decrypt(Key& key, Text& text, int numberOfThreads)
 {
-	int output_size = ((text.getSize() / 16) + 1) * 16;
-	if (output != nullptr) delete[] output;
+	this->key = &key;
+	numberOfRounds = key.getSize() / 4 + 6;
 
+	const int output_size = ((text.getSize() / 16) + 1) * 16;
+	const int numberOfBlocks = output_size / 16;
+
+	if(output != nullptr) delete[] output;
 	output = new byte[output_size];
-	int numberOfBlocks = output_size / 16;
-	int currentBlock;
-	byte* state;
 
-	for(currentBlock=0; currentBlock<numberOfBlocks; currentBlock++)
+	for(auto currentBlock=0; currentBlock<numberOfBlocks; currentBlock++)
 	{
-		//state = text.get16Bytes(currentBlock);
 		loadBlock(text, currentBlock);
 		decipher();
 		saveBlock(currentBlock);

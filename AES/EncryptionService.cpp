@@ -15,19 +15,19 @@ Text EncryptionService::encrypt(Key key, Text& text, int numberOfThreads)
 	/*int currentBlock = 0;
 	int numberOfBlocks = 100;
 	while (currentBlock < numberOfBlocks) {
-		byte block[4][4];
-		addRoundKey(0, block);
+		byte state[4][4];
+		addRoundKey(0, state);
 
 		for (int i = 1; i < key.size(); i++) {
-			subBytes(block);
-			shiftRows(block);
-			mixColumns(block);
-			addRoundKey(i, block);
+			subBytes(state);
+			shiftRows(state);
+			mixColumns(state);
+			addRoundKey(i, state);
 		}
 
-		subBytes(block);
-		shiftRows(block);
-		addRoundKey(key.size(), block);
+		subBytes(state);
+		shiftRows(state);
+		addRoundKey(key.size(), state);
 
 		currentBlock++;
 	}*/

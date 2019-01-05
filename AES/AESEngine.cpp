@@ -20,8 +20,9 @@ void AESEngine::start()
 	else {
 		DecryptionService *decryptionService = &DecryptionService::getInstance();
 		byte* result = decryptionService->decrypt(key, text, configuration->getNumberOfThreads());
-		fileService->saveFile(result, "Files/result.txt");
-		int xx = 0;
+		fileService->saveFile(result, "Files/result.txt", 48); //TODO: zmodyfikowac 
+
+
 	}
 
 }
