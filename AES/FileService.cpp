@@ -19,6 +19,8 @@ FileService::~FileService()
 
 std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::string key_file_name)
 {
+
+	//Load text
 	std::ifstream textFile(text_file_name.c_str(), std::ios::binary);
 	textFile.seekg(0, std::ios::end);
 	const int text_size = textFile.tellg();
@@ -28,6 +30,7 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 	textFile.close();
 	auto* text = new Text(text_content, text_size, text_file_name);
 
+	//Load key
 	std::ifstream keyFile(key_file_name.c_str(), std::ios::binary);
 	keyFile.seekg(0, std::ios::end);
 	const int key_size = keyFile.tellg();
@@ -41,29 +44,10 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 	return std::make_tuple(text, key);
 }
 
-/*int FileService::loadFile(std::string file_name)
-{
-	std::ifstream file(file_name.c_str(), std::ios::binary);
-	if (!file.is_open()) return -1;
 
-	fileName = file_name;
-	file.seekg(0, std::ios::end);
-	size = file.tellg();
-	file.seekg(0, std::ios::beg);
-
-	if (content != nullptr) delete[] content;
-
-	content = new unsigned char[size];
-
-	file.read(reinterpret_cast<char*>(content), size);
-	
-	file.close();
-	return 0;
-}*/
 
 void FileService::saveFile(byte* content, std::string file_name, int file_size) const
 {
-	/*TODO: zrobic tak, zeby dzialalo, bo plik jest pusty*/
 	std::ofstream file(file_name.c_str(), std::ios::binary);
 	file.write(reinterpret_cast<char*>(content), file_size);
 	file.close();

@@ -1,16 +1,20 @@
 ﻿#pragma once
 #include "Types.h"
+#include <tuple>
+#include "AesBase.h"
 
 class Key;
 class Text;
 
-class EncryptionService
+class EncryptionService : public AesBase
 {
+private:
+	void mixColumns();
+	void subBytes();
+	void shiftRows();
+	void cipher();
+
 public:
 	static EncryptionService& getInstance();
-	void addRoundKey(int i, byte block[4][4]);
-	void subBytes(byte block[4][4]);
-	void shiftRows(byte block[4][4]);
-	void mixColumns(byte block[4][4]);
-	Text encrypt(Key key, Text& text, int numberOfThreads);
+	std::tuple<byte*, int> encrypt(Key& key, Text& text, int numberOfThreads);
 };

@@ -13,5 +13,5 @@ private:
 	
 public:
 	static DecryptionService& getInstance();
-	byte* decrypt(Key& key, Text& text, int numberOfThreads);
+	std::tuple<byte*, int> decrypt(Key& key, Text& text, int numberOfThreads);
 };

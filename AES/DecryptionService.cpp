@@ -1,6 +1,6 @@
 ﻿#include "DecryptionService.h"
 #include "Key.h"
-
+#include <tuple>
 
 
 void DecryptionService::mixColumns()
@@ -86,7 +86,6 @@ void DecryptionService::decipher()
 	subBytes();
 	addRoundKey(0);
 
-
 }
 
 DecryptionService& DecryptionService::getInstance()
@@ -95,7 +94,7 @@ DecryptionService& DecryptionService::getInstance()
 	return decryptionService;
 }
 
-byte* DecryptionService::decrypt(Key& key, Text& text, int numberOfThreads)
+std::tuple<byte*, int> DecryptionService::decrypt(Key& key, Text& text, int numberOfThreads)
 {
 	this->key = &key;
 	numberOfRounds = key.getSize() / 4 + 6;
@@ -113,6 +112,7 @@ byte* DecryptionService::decrypt(Key& key, Text& text, int numberOfThreads)
 		saveBlock(currentBlock);
 
 	}
-	return output;
+	//return output;
+	return std::make_tuple(output, output_size);
 }
 

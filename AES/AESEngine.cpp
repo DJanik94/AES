@@ -13,14 +13,15 @@ void AESEngine::start()
 	settingsService->load(key,text);
 	key.prepareRoundKeys();
 
-	if (configuration->isMode() && false) {
+	if (configuration->isMode()) {
 		EncryptionService *encryptionService = &EncryptionService::getInstance();
-		encryptionService->encrypt(key, text, configuration->getNumberOfThreads());
+		auto result = encryptionService->encrypt(key, text, configuration->getNumberOfThreads());
+		fileService->saveFile(std::get<0>(result), "Files/result.txt", std::get<1>(result));
 	}
 	else {
 		DecryptionService *decryptionService = &DecryptionService::getInstance();
-		byte* result = decryptionService->decrypt(key, text, configuration->getNumberOfThreads());
-		fileService->saveFile(result, "Files/result.txt", 48); //TODO: zmodyfikowac 
+		auto result = decryptionService->decrypt(key, text, configuration->getNumberOfThreads());
+		fileService->saveFile(std::get<0>(result), "Files/result.txt", std::get<1>(result)); 
 
 
 	}
