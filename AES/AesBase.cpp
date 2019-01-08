@@ -50,7 +50,7 @@ void AesBase::saveBlock(int block_num)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			output[block_num + n] = state[i][j];
+			output[block_num*16 + n] = state[i][j];
 			n++;
 		}
 	}

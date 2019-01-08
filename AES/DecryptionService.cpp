@@ -1,11 +1,12 @@
 ﻿#include "DecryptionService.h"
 #include "Key.h"
 #include <tuple>
+#include <OMP.h>
 
 
 void DecryptionService::mixColumns()
 {
-	unsigned char a, b, c, d;
+	byte a, b, c, d;
 	for (int i = 0; i < 4; i++)
 	{
 		a = state[0][i];
@@ -104,14 +105,42 @@ std::tuple<byte*, int> DecryptionService::decrypt(Key& key, Text& text, int numb
 
 	if(output != nullptr) delete[] output;
 	output = new byte[output_size];
+	int currentBlock = 0;
+	int num_of_threads;
+	if (numberOfThreads == 1)
+	{
+		for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
+		{
+			loadBlock(text, currentBlock);
+			decipher();
+			saveBlock(currentBlock);
 
-	for(auto currentBlock=0; currentBlock<numberOfBlocks; currentBlock++)
+		}
+	}
+	else if ( numberOfThreads > 1)
+	{
+		omp_set_num_threads(numberOfThreads);
+#pragma omp parallel private(currentBlock, state, num_of_threads) shared(output, text, numberOfBlocks)
+		{
+			//num_of_threads = omp_get_num_threads();
+			currentBlock = omp_get_num_threads();
+			while (currentBlock < numberOfBlocks)
+			{
+				loadBlock(text, currentBlock);
+				decipher();
+				saveBlock(currentBlock);
+				currentBlock += omp_get_num_threads();
+			}
+		}
+	}
+
+	/*for(auto currentBlock=0; currentBlock<numberOfBlocks; currentBlock++)
 	{
 		loadBlock(text, currentBlock);
 		decipher();
 		saveBlock(currentBlock);
 
-	}
+	}*/
 	//return output;
 	return std::make_tuple(output, output_size);
 }

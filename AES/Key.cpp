@@ -6,7 +6,7 @@ Key::Key()
 {
 }
 
-Key::Key(unsigned char* content, int size)
+Key::Key(byte* content, int size)
 {
 	int n = 0;
 	for(auto i=0; i<4; i++)
@@ -31,7 +31,7 @@ void Key::prepareRoundKeys()
 	int i, j;
 	int n = size / 4; // key length in 32-bit words
 	int r = n + 6; // number of AES rounds
-	unsigned char temp[4], k;
+	byte temp[4], k;
 
 	/*for (int h = 0; h < 4; h++)
 	{
@@ -47,7 +47,7 @@ void Key::prepareRoundKeys()
 		}
 	}
 
-	while (j < (r * 4)) {
+	while (j < ((r+1) * 4)) {//Dodane =
 
 		// Copying the previous column
 		for (i = 0; i < 4; i++) {

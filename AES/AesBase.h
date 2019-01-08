@@ -14,7 +14,6 @@
 class AesBase
 {
 protected:
-
 	Key* key=nullptr;
 	byte state[4][4];
 	byte round_key[4][60];

@@ -17,5 +17,6 @@ public:
 	AESEngine();
 	void start();
 	~AESEngine();
+	void setConfiguration();
 };
 

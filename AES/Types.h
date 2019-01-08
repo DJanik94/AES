@@ -1,4 +1,6 @@
-#include<vector>
+#include<cstdint>
+#include<map>
 
 typedef unsigned char byte;
-//typedef std::vector<unsigned char> byte_vect;
+//typedef std::uint8_t byte;
+typedef std::map<std::string, std::string> configmap;

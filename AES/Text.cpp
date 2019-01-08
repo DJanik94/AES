@@ -6,7 +6,7 @@ Text::Text()
 {
 }
 
-Text::Text(unsigned char* cont, int size_, std::string fileName_)
+Text::Text(byte* cont, int size_, std::string fileName_)
 {
 	content = cont;
 	size = size_;

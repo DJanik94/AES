@@ -13,17 +13,20 @@ SettingsService& SettingsService::getInstance()
 SettingsService::SettingsService()
 {
 	fileService = &FileService::getInstance();
+	configuration = &Configuration::getInstance();
 }
 
 
 void SettingsService::load(Key& key, Text& text)
 {
-	Configuration *configuration = &Configuration::getInstance();
+	
 
-	bool mode = 1;
-	int numberOfThread = 1;
-	string pathToKey = "Files/key.txt";
-	string pathToText = "Files/text.txt";
+	bool mode = configuration->isMode();
+	int numberOfThread = configuration->getNumberOfThreads();
+	string pathToKey = configuration->getKeyFilePath();
+
+
+	string pathToText = mode==true ? "Files/text.txt" : "Files/result_en.txt";
 
 
 	//cin from user

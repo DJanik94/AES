@@ -8,7 +8,7 @@ class SettingsService
 	FileService *fileService;
 	Text* text_;
 	Key* key_;
-
+	Configuration *configuration;
 	SettingsService();
 
 public:
