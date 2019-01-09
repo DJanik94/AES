@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Types.h"
-#include <tuple>
+//#include "Types.h"
+//#include <tuple>
 #include "AesBase.h"
 
 class Key;
@@ -15,6 +15,7 @@ private:
 	void cipher();
 
 public:
-	static EncryptionService& getInstance();
-	std::tuple<byte*, int> encrypt(Key& key, Text& text, int numberOfThreads);
+	static EncryptionService* getInstance();
+	
+	void cipher_decipher() override;
 };

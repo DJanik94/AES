@@ -1,5 +1,6 @@
 #include "Key.h"
 #include "AESEngine.h"
+#include "AesBase.h"
 
 
 Key::Key()
@@ -8,6 +9,7 @@ Key::Key()
 
 Key::Key(byte* content, int size)
 {
+	if (!(size == 16 || size == 24 || size == 32)) throw std::exception("Nieprawidlowy rozmiar klucza");
 	int n = 0;
 	for(auto i=0; i<4; i++)
 	{
@@ -18,6 +20,7 @@ Key::Key(byte* content, int size)
 		}
 	}
 	this->size = size;
+	
 }
 
 byte Key::getRoundKeyValue(int i, int j)
@@ -32,12 +35,6 @@ void Key::prepareRoundKeys()
 	int n = size / 4; // key length in 32-bit words
 	int r = n + 6; // number of AES rounds
 	byte temp[4], k;
-
-	/*for (int h = 0; h < 4; h++)
-	{
-		if (round_key[h] != nullptr) delete[] round_key[h];
-		round_key[h] = new byte[4*(r + 1)];
-	}*/
 
 	
 	// The first round key is the key itself.

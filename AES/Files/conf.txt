@@ -2,4 +2,4 @@ decrypt
 1
 Files/result_en.txt
 Files/key.txt
-File/result_dec.txt
+Files/result_dec.txt

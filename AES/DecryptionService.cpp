@@ -1,7 +1,7 @@
 ﻿#include "DecryptionService.h"
-#include "Key.h"
-#include <tuple>
-#include <OMP.h>
+//#include "Key.h"
+//#include <tuple>
+//#include <OMP.h>
 
 
 void DecryptionService::mixColumns()
@@ -65,7 +65,8 @@ void DecryptionService::shiftRows()
 	
 }
 
-void DecryptionService::decipher()
+void DecryptionService::cipher_decipher()
+
 {
 
 	addRoundKey(numberOfRounds);
@@ -89,59 +90,13 @@ void DecryptionService::decipher()
 
 }
 
-DecryptionService& DecryptionService::getInstance()
+DecryptionService* DecryptionService::getInstance()
 {
-	static DecryptionService decryptionService;
-	return decryptionService;
+	
+	static DecryptionService *instance;
+	if (instance == nullptr) instance = new DecryptionService;
+	return instance;
 }
 
-std::tuple<byte*, int> DecryptionService::decrypt(Key& key, Text& text, int numberOfThreads)
-{
-	this->key = &key;
-	numberOfRounds = key.getSize() / 4 + 6;
 
-	const int output_size = ((text.getSize() / 16) + 1) * 16;
-	const int numberOfBlocks = output_size / 16;
-
-	if(output != nullptr) delete[] output;
-	output = new byte[output_size];
-	int currentBlock = 0;
-	int num_of_threads;
-	if (numberOfThreads == 1)
-	{
-		for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
-		{
-			loadBlock(text, currentBlock);
-			decipher();
-			saveBlock(currentBlock);
-
-		}
-	}
-	else if ( numberOfThreads > 1)
-	{
-		omp_set_num_threads(numberOfThreads);
-#pragma omp parallel private(currentBlock, state, num_of_threads) shared(output, text, numberOfBlocks)
-		{
-			//num_of_threads = omp_get_num_threads();
-			currentBlock = omp_get_num_threads();
-			while (currentBlock < numberOfBlocks)
-			{
-				loadBlock(text, currentBlock);
-				decipher();
-				saveBlock(currentBlock);
-				currentBlock += omp_get_num_threads();
-			}
-		}
-	}
-
-	/*for(auto currentBlock=0; currentBlock<numberOfBlocks; currentBlock++)
-	{
-		loadBlock(text, currentBlock);
-		decipher();
-		saveBlock(currentBlock);
-
-	}*/
-	//return output;
-	return std::make_tuple(output, output_size);
-}
 

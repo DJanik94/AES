@@ -1,11 +1,6 @@
 #include "AesBase.h"
+#include <OMP.h>
 
-
-
-/*int AesBase::getSBoxValue(int n)
-{
-	return sbox[n];
-}*/
 
 
 
@@ -14,7 +9,7 @@ void AesBase::addRoundKey(int round)
 	int i, j;
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {
-			//state[i][j] ^= round_key[i][round * 4 + j];
+
 			state[i][j] ^= key->getRoundKeyValue(i, round * 4 + j);
 		}
 	}
@@ -124,4 +119,53 @@ int AESLookupTable::getInvSBoxValue(int n)
 		0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,
 		0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d };
 	return invSbox[n];
+}
+
+std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThreads)
+{
+	this->key = &key;
+	numberOfRounds = key.getSize() / 4 + 6;
+	int num_of_threads;
+
+	const int output_size = ((text.getSize() / 16) + 1) * 16;
+	const int numberOfBlocks = output_size / 16;
+
+	if (output != nullptr) delete[] output;
+	output = new byte[output_size];
+	int currentBlock = 0;
+	if (numberOfThreads == 1)
+	{
+		for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
+		{
+			loadBlock(text, currentBlock);
+			cipher_decipher();
+			saveBlock(currentBlock);
+
+		}
+	}
+	else if (numberOfThreads > 1)
+	{
+		omp_set_num_threads(numberOfThreads);
+
+#pragma omp parallel private(currentBlock, state, num_of_threads) shared(output, text, numberOfBlocks)
+		{
+			num_of_threads = omp_get_num_threads();
+			currentBlock = omp_get_thread_num();
+			while (currentBlock < numberOfBlocks)
+			{
+				loadBlock(text, currentBlock);
+				cipher_decipher();
+				saveBlock(currentBlock);
+				currentBlock += omp_get_num_threads();
+			}
+		}
+
+
+	}
+	else
+	{
+
+	}
+
+	return std::make_tuple(output, output_size);
 }

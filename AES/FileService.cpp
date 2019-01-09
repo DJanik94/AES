@@ -31,7 +31,6 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 	textFile.seekg(0, std::ios::beg);
 	auto* text_content = new byte[text_size];
 	text_content[text_size] = 0x00;
-	//std::fill(text_content, text_content + text_size, 0);
 	textFile.read(reinterpret_cast<char*>(text_content), text_size);
 	textFile.close();
 	auto* text = new Text(text_content, text_size, text_file_name);
@@ -55,6 +54,7 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 
 void FileService::saveFile(byte* content, std::string file_name, int file_size) const
 {
+	/*TODO sprawdzic dlaczego wrzuca smeci na koncu pliku*/
 	std::ofstream file(file_name.c_str(), std::ios::binary);
 	content[file_size] = 0x00;
 	file.write(reinterpret_cast<char*>(content), file_size);
@@ -79,7 +79,7 @@ std::tuple<bool, int, std::string, std::string, std::string> FileService::loadSe
 			line.resize(line.size() - 1);
 		mode = (line == "encrypt");
 		std::getline(file, line);
-		numOfThreads = atoi(line.c_str());
+		numOfThreads = std::stoi(line.c_str());
 		std::getline(file, inputFileName);
 		if (inputFileName[inputFileName.size() - 1] == '\r')
 			inputFileName.resize(inputFileName.size() - 1);

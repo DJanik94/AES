@@ -1,64 +1,17 @@
-﻿#include<OMP.h>
+﻿//#include<OMP.h>
 #include "EncryptionService.h"
 #include "Types.h"
-#include "Text.h"
-#include "Key.h"
+//#include "Text.h"
+//#include "Key.h"
 
 
-EncryptionService& EncryptionService::getInstance()
+EncryptionService* EncryptionService::getInstance()
 {
-	static EncryptionService encryptionService;
+	static EncryptionService* encryptionService;
+	if (encryptionService == nullptr) encryptionService = new EncryptionService;
 	return encryptionService;
 }
 
-std::tuple<byte*, int> EncryptionService::encrypt(Key& key, Text& text, int numberOfThreads)
-{
-	this->key = &key;
-	numberOfRounds = key.getSize() / 4 + 6;
-	int num_of_threads;
-
-	const int output_size = ((text.getSize() / 16) + 1) * 16;
-	const int numberOfBlocks = output_size / 16;
-
-	if (output != nullptr) delete[] output;
-	output = new byte[output_size];
-	int currentBlock = 0;
-	if(numberOfThreads == 1)
-	{
-		for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
-		{
-			loadBlock(text, currentBlock);
-			cipher();
-			saveBlock(currentBlock);
-
-		}
-	}
-	else if (numberOfThreads > 1)
-	{
-		omp_set_num_threads(numberOfThreads);
-		
-#pragma omp parallel private(currentBlock, state, num_of_threads) shared(output, text, numberOfBlocks)
-		{
-			num_of_threads = omp_get_num_threads();
-			currentBlock = omp_get_num_threads();
-			while( currentBlock < numberOfBlocks)
-			{
-				loadBlock(text, currentBlock);
-				cipher();
-				saveBlock(currentBlock);
-				currentBlock += omp_get_num_threads();
-			}
-		}
-
-		
-	}
-	else
-	{
-
-	}
-	
-	return std::make_tuple(output, output_size);
-}
 
 
 void EncryptionService::mixColumns()
@@ -113,7 +66,7 @@ void EncryptionService::shiftRows()
 	state[3][1] = temp;
 }
 
-void EncryptionService::cipher()
+void EncryptionService::cipher_decipher()
 {
 	addRoundKey(0);
 

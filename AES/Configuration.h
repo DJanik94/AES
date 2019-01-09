@@ -1,12 +1,13 @@
 ﻿#pragma once
-#include <memory>
+//#include <memory>
 #include<string>
+#include <tuple>
 
 class Configuration
 {
 	bool mode;
 	int numberOfThreads;
-	std::string sourcePath;
+	std::string sourceFilePath;
 	std::string keyFilePath;
 	std::string outputFilePath;
 
@@ -22,4 +23,6 @@ public:
 	std::string getKeyFilePath() const;
 	void setOutputFilePath(std::string);
 	std::string getOutputFilePath() const;
+	void setDefaultConfiguration(bool mode);
+	void setConfiguration(std::tuple<bool, int, std::string, std::string, std::string> conf);
 };
