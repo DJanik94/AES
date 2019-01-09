@@ -147,9 +147,8 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 	{
 		omp_set_num_threads(numberOfThreads);
 
-#pragma omp parallel private(currentBlock, state, num_of_threads) shared(output, text, numberOfBlocks)
+#pragma omp parallel private(currentBlock, state) shared(output, text, numberOfBlocks)
 		{
-			num_of_threads = omp_get_num_threads();
 			currentBlock = omp_get_thread_num();
 			while (currentBlock < numberOfBlocks)
 			{
