@@ -16,7 +16,6 @@ SettingsService::SettingsService()
 	configuration = &Configuration::getInstance();
 }
 
-
 void SettingsService::load(Key& key, Text& text)
 {
 	

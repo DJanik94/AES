@@ -14,7 +14,6 @@ class FileService
 	std::string fileName;
 	Configuration* configuration;
 
-
 public:
 	static FileService& getInstance();
 	~FileService();

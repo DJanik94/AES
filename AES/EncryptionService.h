@@ -8,14 +8,12 @@ class Text;
 
 class EncryptionService : public AesBase
 {
+public:
+	static EncryptionService* getInstance();
+	void execute() override;
+
 private:
 	void mixColumns();
 	void subBytes();
 	void shiftRows();
-	void cipher();
-
-public:
-	static EncryptionService* getInstance();
-	
-	void cipher_decipher() override;
 };

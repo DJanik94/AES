@@ -5,14 +5,12 @@ class Text;
 
 class DecryptionService : public AesBase
 {
-private:
+public:
+	static DecryptionService* getInstance();
+	void execute() override;
 
+private:
 	void mixColumns();
 	void subBytes();
 	void shiftRows();
-	void decipher();
-	
-public:
-	static DecryptionService* getInstance();
-	void cipher_decipher() override;
 };

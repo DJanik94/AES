@@ -1,4 +1,5 @@
 ﻿#include "DecryptionService.h"
+#include "AESLookupTable.h"
 //#include "Key.h"
 //#include <tuple>
 //#include <OMP.h>
@@ -19,20 +20,17 @@ void DecryptionService::mixColumns()
 		state[2][i] = Multiply(a, 0x0d) ^ Multiply(b, 0x09) ^ Multiply(c, 0x0e) ^ Multiply(d, 0x0b);
 		state[3][i] = Multiply(a, 0x0b) ^ Multiply(b, 0x0d) ^ Multiply(c, 0x09) ^ Multiply(d, 0x0e);
 	}
-
 }
 
 void DecryptionService::subBytes()
 {
-
 	for (auto i = 0; i < 4; i++)
 	{
 		for (auto j = 0; j < 4; j++)
 		{
 			state[i][j] = AESLookupTable::getInvSBoxValue(state[i][j]);
 		}
-	}
-	
+	}	
 }
 
 void DecryptionService::shiftRows()
@@ -65,10 +63,9 @@ void DecryptionService::shiftRows()
 	
 }
 
-void DecryptionService::cipher_decipher()
+void DecryptionService::execute()
 
 {
-
 	addRoundKey(numberOfRounds);
 
 	// There will be numberOfRounds rounds.

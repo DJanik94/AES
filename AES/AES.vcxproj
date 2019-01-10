@@ -156,6 +156,7 @@
     <ClCompile Include="AES.cpp" />
     <ClCompile Include="AESEngine.cpp" />
     <ClCompile Include="AesBase.cpp" />
+    <ClCompile Include="AESLookupTable.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="DecryptionService.cpp" />
     <ClCompile Include="EncryptionService.cpp" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="AESEngine.h" />
     <ClInclude Include="AesBase.h" />
+    <ClInclude Include="AESLookupTable.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="DecryptionService.h" />
     <ClInclude Include="EncryptionService.h" />

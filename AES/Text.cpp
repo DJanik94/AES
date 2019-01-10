@@ -6,11 +6,11 @@ Text::Text()
 {
 }
 
-Text::Text(byte* cont, int size_, std::string fileName_)
+Text::Text(byte* content, int size, std::string fileName)
 {
-	content = cont;
-	size = size_;
-	fileName = fileName_;
+	this->content = content;
+	this->size = size;
+	this->fileName = fileName;
 }
 
 

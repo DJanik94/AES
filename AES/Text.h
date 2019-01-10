@@ -10,9 +10,8 @@ class Text
 public:
 	Text();
 	Text(byte *cont, int size_, std::string fileName_);
-	~Text();
-	byte* get16Bytes(int currentBlock);
 	byte getByte(int byte_num);
 	int getSize();
+	~Text();
 };
 

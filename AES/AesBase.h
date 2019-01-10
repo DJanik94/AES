@@ -20,24 +20,13 @@ protected:
 	int numberOfRounds;
 	byte* output;
 	void addRoundKey(int round);
-	void loadBlock(Text& input, int block_num);
-	void saveBlock(int block_num);
+	void loadBlock(Text& input, int blockNumber);
+	void saveBlock(int blockNumber);
 
 
 public:
 	AesBase();
 	~AesBase();
-	virtual void cipher_decipher() = 0;
+	virtual void execute() = 0;
 	std::tuple<byte*, int> proceed(Key& key, Text& text, int numberOfThreads);
-};
-
-class AESLookupTable
-{
-	AESLookupTable();
-
-public:
-	static AESLookupTable& getInstance();
-	~AESLookupTable();
-	static int getSBoxValue(int n);
-	static int getInvSBoxValue(int n);
 };

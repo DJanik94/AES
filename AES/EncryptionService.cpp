@@ -1,6 +1,7 @@
 ﻿//#include<OMP.h>
 #include "EncryptionService.h"
 #include "Types.h"
+#include "AESLookupTable.h"
 //#include "Text.h"
 //#include "Key.h"
 
@@ -66,7 +67,7 @@ void EncryptionService::shiftRows()
 	state[3][1] = temp;
 }
 
-void EncryptionService::cipher_decipher()
+void EncryptionService::execute()
 {
 	addRoundKey(0);
 
