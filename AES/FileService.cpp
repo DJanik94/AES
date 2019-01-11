@@ -54,10 +54,9 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 
 void FileService::saveFile(byte* content, std::string file_name, int file_size) const
 {
-	/*TODO sprawdzic dlaczego wrzuca smeci na koncu pliku*/
 	std::ofstream file(file_name.c_str(), std::ios::binary);
-	content[file_size] = 0x00;
-	file.write(reinterpret_cast<char*>(content), file_size);
+	std::string contentString = ((char*)content);
+	file.write(contentString.c_str(), contentString.size());
 	file.close();
 }
 
