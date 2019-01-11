@@ -1,5 +1,6 @@
 #include "AESEngine.h"
 #include <iostream>
+#include "mpi.h"
 
 AESEngine::AESEngine()
 {
