@@ -177,6 +177,7 @@
     <ClInclude Include="EncryptionService.h" />
     <ClInclude Include="FileService.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="Method.h" />
     <ClInclude Include="SettingsService.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Types.h" />

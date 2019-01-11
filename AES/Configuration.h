@@ -2,11 +2,13 @@
 //#include <memory>
 #include<string>
 #include <tuple>
+#include "Method.h"
 
 class Configuration
 {
 	bool mode;
 	int numberOfThreads;
+	Method method;
 	std::string sourceFilePath;
 	std::string keyFilePath;
 	std::string outputFilePath;
@@ -23,6 +25,8 @@ public:
 	std::string getKeyFilePath() const;
 	void setOutputFilePath(std::string);
 	std::string getOutputFilePath() const;
+	Method getMethod() const;
+	void setMethod(Method method);
 	void setDefaultConfiguration(bool mode);
-	void setConfiguration(std::tuple<bool, int, std::string, std::string, std::string> conf);
+	void setConfiguration(std::tuple<bool, int, Method, std::string, std::string, std::string> conf);
 };

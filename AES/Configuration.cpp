@@ -56,6 +56,16 @@ std::string Configuration::getOutputFilePath() const
 	return this->outputFilePath;
 }
 
+Method Configuration::getMethod() const
+{
+	return method;
+}
+
+void Configuration::setMethod(Method method)
+{
+	this->method = method;
+}
+
 void Configuration::setDefaultConfiguration(bool mode)
 {
 	this->mode = mode;
@@ -74,11 +84,12 @@ void Configuration::setDefaultConfiguration(bool mode)
 	}
 }
 
-void Configuration::setConfiguration(std::tuple<bool, int, std::string, std::string, std::string> conf)
+void Configuration::setConfiguration(std::tuple<bool, int, Method,  std::string, std::string, std::string> conf)
 {
 	setMode(std::get<0>(conf));
 	setNumberOfThreads(std::get<1>(conf));
-	setSourceFilePath(std::get<2>(conf));
-	setKeyFilePath(std::get<3>(conf));
-	setOutputFilePath(std::get<4>(conf));
+	setMethod(std::get<2>(conf));
+	setSourceFilePath(std::get<3>(conf));
+	setKeyFilePath(std::get<4>(conf));
+	setOutputFilePath(std::get<5>(conf));
 }

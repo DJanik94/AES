@@ -95,5 +95,8 @@
     <ClInclude Include="AESLookupTable.h">
       <Filter>Header Files\service</Filter>
     </ClInclude>
+    <ClInclude Include="Method.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
