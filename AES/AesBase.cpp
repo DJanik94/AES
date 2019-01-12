@@ -27,6 +27,7 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 		case Method::SEQUENCE:
 		{
 			doSequence(text, numberOfBlocks, currentBlock);
+			//doOpenMP(text, numberOfThreads, numberOfBlocks, currentBlock);
 			break;
 		}
 		case Method::OMP:
@@ -117,22 +118,16 @@ void AesBase::doSequence(Text& text, const int numberOfBlocks, int& currentBlock
 
 void AesBase::doOpenMP(Text& text, int numberOfThreads, const int numberOfBlocks, int currentBlock)
 {
-	int tmpNumberOfThreads;
+	//int tmpNumberOfThreads;
 	Configuration configuration = Configuration::getInstance();
 	bool mode = configuration.isMode();
 	omp_set_num_threads(numberOfThreads);
-#pragma omp parallel private(state,currentBlock,tmpNumberOfThreads) shared(output,text,numberOfBlocks,mode)
+#pragma omp parallel for private(safe) 
+	for(int currentBlock = 0; currentBlock <numberOfBlocks; currentBlock++)
 	{
-		currentBlock = omp_get_thread_num();
-		tmpNumberOfThreads = omp_get_num_threads();
-
-		while (currentBlock < numberOfBlocks)
-		{
 			loadBlock(text, currentBlock);
 			execute();
 			saveBlock(currentBlock);
-			currentBlock += tmpNumberOfThreads;
-		}
 	}
 }
 
