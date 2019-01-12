@@ -60,6 +60,9 @@
     <ClCompile Include="AESLookupTable.cpp">
       <Filter>Source Files\service</Filter>
     </ClCompile>
+    <ClCompile Include="SystemInformation.cpp">
+      <Filter>Source Files\model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h">
@@ -96,6 +99,9 @@
       <Filter>Header Files\service</Filter>
     </ClInclude>
     <ClInclude Include="Method.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemInformation.h">
       <Filter>Header Files\model</Filter>
     </ClInclude>
   </ItemGroup>

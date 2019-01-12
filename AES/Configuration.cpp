@@ -71,7 +71,7 @@ void Configuration::setDefaultConfiguration(bool mode)
 	this->mode = mode;
 	keyFilePath = "Files/key.txt";
 	numberOfThreads = 4;
-	method = Method::OMP;
+	method = Method::MPI;
 	if (mode)
 	{
 		sourceFilePath = "Files/text.txt";

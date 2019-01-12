@@ -114,7 +114,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>msmpi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files\Microsoft HPC Pack 2012\Lib\i386;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files\Microsoft HPC Pack 2012\Lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -166,6 +166,7 @@
     <ClCompile Include="FileService.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="SettingsService.cpp" />
+    <ClCompile Include="SystemInformation.cpp" />
     <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Key.h" />
     <ClInclude Include="Method.h" />
     <ClInclude Include="SettingsService.h" />
+    <ClInclude Include="SystemInformation.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>

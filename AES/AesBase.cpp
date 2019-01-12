@@ -2,7 +2,11 @@
 #include <OMP.h>
 #include "Method.h"
 #include <mpi.h>
+#include <iostream>
+#include "SystemInformation.h"
 
+int globalArgC;
+char **globalArgV;
 
 void AesBase::addRoundKey(int round)
 {
@@ -79,14 +83,13 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 	switch (method)
 	{
 		case Method::SEQUENCE:
-			if (numberOfThreads == 1 && method == Method::SEQUENCE)
+			if (numberOfThreads == 1)
 			{
 				for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
 				{
 					loadBlock(text, currentBlock);
 					execute();
 					saveBlock(currentBlock);
-
 				}
 			}
 			break;
@@ -105,7 +108,31 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 				}
 			}
 		case Method::MPI:
-			//MPI_Init()
+			int myRank, p;
+			SystemInformation systemInformation = SystemInformation::getInstance();
+			int globalArgC = systemInformation.getGlobalArgC();
+			char** globalArgV = systemInformation.getGlobalArgV();
+			MPI_Init(&globalArgC, &globalArgV);
+			MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+			MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+
+			for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
+			{
+				std::cout << "Daj znak zycia" << std::endl;
+				if (myRank == numberOfBlocks % 9)
+				{
+					loadBlock(text, currentBlock);
+					execute();
+					saveBlock(currentBlock);
+				}
+			}
+
+			std::cout << myRank << std::endl;
+			std::cout << p << std::endl;
+
+			MPI_Finalize();
+			
 			break;
 
 	}
