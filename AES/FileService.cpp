@@ -60,14 +60,16 @@ void FileService::saveFile(byte* content, std::string file_name, int file_size) 
 	file.close();
 }
 
-std::tuple<bool, int, std::string, std::string, std::string> FileService::loadSettings()
+std::tuple<bool, int, Method,  std::string, std::string, std::string> FileService::loadSettings()
 {
 	std::string confFileName = "Files/conf.txt";
 	bool mode;
 	int numOfThreads;
+	Method method;
+	std::string methodString;
 	std::string inputFileName, keyFileName, outputFileName, line;
 
-	
+	//TODO validation
 
 	std::ifstream file (confFileName.c_str(), std::ios::binary);
 	if (!file.is_open()) throw std::exception("Conf file not found");
@@ -79,6 +81,7 @@ std::tuple<bool, int, std::string, std::string, std::string> FileService::loadSe
 		mode = (line == "encrypt");
 		std::getline(file, line);
 		numOfThreads = std::stoi(line.c_str());
+		std::getline(file, methodString);
 		std::getline(file, inputFileName);
 		if (inputFileName[inputFileName.size() - 1] == '\r')
 			inputFileName.resize(inputFileName.size() - 1);
@@ -89,7 +92,9 @@ std::tuple<bool, int, std::string, std::string, std::string> FileService::loadSe
 		if (outputFileName[outputFileName.size() - 1] == '\r')
 			outputFileName.resize(outputFileName.size() - 1);
 		file.close();
+
+		method = methodMap.find(methodString)->second;
 	}
 
-	return std::make_tuple(mode, numOfThreads, inputFileName, keyFileName, outputFileName);
+	return std::make_tuple(mode, numOfThreads, method, inputFileName, keyFileName, outputFileName);
 }

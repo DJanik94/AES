@@ -15,10 +15,12 @@ void AESEngine::start()
 	/*TODO zmodyfikowac tak, aby mozna wczytac konfiguracje z pliku lub przez uzytkownika*/
 	int choice = 0;
 	bool mode;
+	std::string methodString;
+	Method method;
 	std::cout << "1 - Konfiguracja domyslna, 2 - Z pliku \"Files/conf.txt\" 3 - podaj parametry" << std::endl;
 	std::cin >> choice;
 
-	std::tuple<bool, int, std::string, std::string, std::string> conf;
+	std::tuple<bool, int, Method, std::string, std::string, std::string> conf;
 	int number_of_threads;
 	std::string input_path, key_path, out_path;
 
@@ -46,7 +48,12 @@ void AESEngine::start()
 		std::cin >> key_path;
 		std::cout << "Podaj sciezke pliku wyjsciowego" << std::endl;
 		std::cin >> out_path;
-		configuration->setConfiguration(std::make_tuple(mode, number_of_threads, input_path, key_path, out_path));
+		std::cout << "Podaj metode (SEQUENCE, OMP, MPI): " << std::endl;
+		std::cin >> methodString;
+		method = methodMap.find(methodString)->second;
+
+		configuration->setConfiguration
+			(std::make_tuple(mode, number_of_threads, methodMap.find(methodString)->second, input_path, key_path, out_path));
 		break;
 	default:
 		configuration->setDefaultConfiguration(true);
@@ -64,7 +71,7 @@ void AESEngine::start()
 		service = DecryptionService::getInstance(); 
 	}
 
-	auto result = service->proceed(key, text, configuration->getNumberOfThreads());
+	auto result = service->proceed(key, text, configuration->getNumberOfThreads(), configuration->getMethod());
 	fileService->saveFile(std::get<0>(result), configuration->getOutputFilePath(), std::get<1>(result));
 
 

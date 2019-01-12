@@ -70,17 +70,17 @@ void Configuration::setDefaultConfiguration(bool mode)
 {
 	this->mode = mode;
 	keyFilePath = "Files/key.txt";
+	numberOfThreads = 4;
+	method = Method::OMP;
 	if (mode)
 	{
 		sourceFilePath = "Files/text.txt";
 		outputFilePath = "Files/result_en.txt";
-		numberOfThreads = 4;
 	}
 	else
 	{
 		sourceFilePath = "Files/result_en.txt";
 		outputFilePath = "Files/result_dec.txt";
-		numberOfThreads = 4;
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "Text.h"
 #include "Key.h"
 #include <tuple>
+#include "Method.h"
 
 // xtime is a macro that finds the product of {02} and the argument to xtime modulo {1b}  
 #define xtime(x)   ((x<<1) ^ (((x>>7) & 1) * 0x1b))
@@ -28,5 +29,5 @@ public:
 	AesBase();
 	~AesBase();
 	virtual void execute() = 0;
-	std::tuple<byte*, int> proceed(Key& key, Text& text, int numberOfThreads);
+	std::tuple<byte*, int> proceed(Key& key, Text& text, int numberOfThreads, Method method);
 };

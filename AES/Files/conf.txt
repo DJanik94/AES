@@ -1,5 +1,6 @@
 decrypt
 1
+OMP
 Files/result_en.txt
 Files/key.txt
 Files/result_dec.txt

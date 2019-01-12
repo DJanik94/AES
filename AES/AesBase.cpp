@@ -1,7 +1,7 @@
 #include "AesBase.h"
 #include <OMP.h>
-
-
+#include "Method.h"
+#include <mpi.h>
 
 
 void AesBase::addRoundKey(int round)
@@ -64,7 +64,7 @@ AesBase::~AesBase()
 
 
 
-std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThreads)
+std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThreads, Method method)
 {
 	this->key = &key;
 	numberOfRounds = key.getSize() / 4 + 6;
@@ -76,38 +76,38 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 	if (output != nullptr) delete[] output;
 	output = new byte[output_size];
 	int currentBlock = 0;
-	if (numberOfThreads == 1)
+	switch (method)
 	{
-		for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
-		{
-			loadBlock(text, currentBlock);
-			execute();
-			saveBlock(currentBlock);
+		case Method::SEQUENCE:
+			if (numberOfThreads == 1 && method == Method::SEQUENCE)
+			{
+				for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
+				{
+					loadBlock(text, currentBlock);
+					execute();
+					saveBlock(currentBlock);
 
-		}
-	}
-	else if (numberOfThreads > 1)
-	{
-		omp_set_num_threads(numberOfThreads);
+				}
+			}
+			break;
+		case Method::OMP:
+			omp_set_num_threads(numberOfThreads);
 
 #pragma omp parallel private(currentBlock, state) shared(output, text, numberOfBlocks)
-		{
-			currentBlock = omp_get_thread_num();
-			while (currentBlock < numberOfBlocks)
 			{
-				loadBlock(text, currentBlock);
-				execute();
-				saveBlock(currentBlock);
-				currentBlock += omp_get_num_threads();
+				currentBlock = omp_get_thread_num();
+				while (currentBlock < numberOfBlocks)
+				{
+					loadBlock(text, currentBlock);
+					execute();
+					saveBlock(currentBlock);
+					currentBlock += omp_get_num_threads();
+				}
 			}
-		}
-
-
-	}
-	else
-	{
+		case Method::MPI:
+			//MPI_Init()
+			break;
 
 	}
-
 	return std::make_tuple(output, output_size);
 }
