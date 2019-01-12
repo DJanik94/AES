@@ -125,9 +125,9 @@ void AesBase::doOpenMP(Text& text, int numberOfThreads, const int numberOfBlocks
 #pragma omp parallel for private(safe) 
 	for(int currentBlock = 0; currentBlock <numberOfBlocks; currentBlock++)
 	{
-			loadBlock(text, currentBlock);
-			execute();
-			saveBlock(currentBlock);
+		loadBlock(text, currentBlock);
+		execute();
+		saveBlock(currentBlock);
 	}
 }
 
