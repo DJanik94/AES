@@ -6,6 +6,7 @@
 
 class Configuration
 {
+
 	bool mode;
 	int numberOfThreads;
 	Method method;
@@ -27,6 +28,6 @@ public:
 	std::string getOutputFilePath() const;
 	Method getMethod() const;
 	void setMethod(Method method);
-	void setDefaultConfiguration(bool mode);
+	void setDefaultConfiguration();
 	void setConfiguration(std::tuple<bool, int, Method, std::string, std::string, std::string> conf);
 };

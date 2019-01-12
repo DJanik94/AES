@@ -66,11 +66,10 @@ void Configuration::setMethod(Method method)
 	this->method = method;
 }
 
-void Configuration::setDefaultConfiguration(bool mode)
+void Configuration::setDefaultConfiguration()
 {
-	this->mode = mode;
 	keyFilePath = "Files/key.txt";
-	numberOfThreads = 15;
+	numberOfThreads = 1;
 	method = Method::OMP;
 	if (mode)
 	{

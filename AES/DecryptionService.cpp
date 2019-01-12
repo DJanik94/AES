@@ -1,24 +1,20 @@
 ﻿#include "DecryptionService.h"
 #include "AESLookupTable.h"
-//#include "Key.h"
-//#include <tuple>
-//#include <OMP.h>
-
 
 void DecryptionService::mixColumns()
 {
 	byte a, b, c, d;
 	for (int i = 0; i < 4; i++)
 	{
-		a = state[0][i];
-		b = state[1][i];
-		c = state[2][i];
-		d = state[3][i];
+		a = safe[0][i];
+		b = safe[1][i];
+		c = safe[2][i];
+		d = safe[3][i];
 
-		state[0][i] = Multiply(a, 0x0e) ^ Multiply(b, 0x0b) ^ Multiply(c, 0x0d) ^ Multiply(d, 0x09);
-		state[1][i] = Multiply(a, 0x09) ^ Multiply(b, 0x0e) ^ Multiply(c, 0x0b) ^ Multiply(d, 0x0d);
-		state[2][i] = Multiply(a, 0x0d) ^ Multiply(b, 0x09) ^ Multiply(c, 0x0e) ^ Multiply(d, 0x0b);
-		state[3][i] = Multiply(a, 0x0b) ^ Multiply(b, 0x0d) ^ Multiply(c, 0x09) ^ Multiply(d, 0x0e);
+		safe[0][i] = propagate(a, 0x0e) ^ propagate(b, 0x0b) ^ propagate(c, 0x0d) ^ propagate(d, 0x09);
+		safe[1][i] = propagate(a, 0x09) ^ propagate(b, 0x0e) ^ propagate(c, 0x0b) ^ propagate(d, 0x0d);
+		safe[2][i] = propagate(a, 0x0d) ^ propagate(b, 0x09) ^ propagate(c, 0x0e) ^ propagate(d, 0x0b);
+		safe[3][i] = propagate(a, 0x0b) ^ propagate(b, 0x0d) ^ propagate(c, 0x09) ^ propagate(d, 0x0e);
 	}
 }
 
@@ -28,7 +24,7 @@ void DecryptionService::subBytes()
 	{
 		for (auto j = 0; j < 4; j++)
 		{
-			state[i][j] = AESLookupTable::getInvSBoxValue(state[i][j]);
+			safe[i][j] = AESLookupTable::getInvSBoxValue(safe[i][j]);
 		}
 	}	
 }
@@ -37,28 +33,25 @@ void DecryptionService::shiftRows()
 {
 	byte temp;
 
-	// Rotate first row 1 columns to right
-	temp = state[1][3];
-	state[1][3] = state[1][2];
-	state[1][2] = state[1][1];
-	state[1][1] = state[1][0];
-	state[1][0] = temp;
+	temp = safe[1][3];
+	safe[1][3] = safe[1][2];
+	safe[1][2] = safe[1][1];
+	safe[1][1] = safe[1][0];
+	safe[1][0] = temp;
 
-	// Rotate second row 2 columns to right
-	temp = state[2][0];
-	state[2][0] = state[2][2];
-	state[2][2] = temp;
+	temp = safe[2][0];
+	safe[2][0] = safe[2][2];
+	safe[2][2] = temp;
 
-	temp = state[2][1];
-	state[2][1] = state[2][3];
-	state[2][3] = temp;
+	temp = safe[2][1];
+	safe[2][1] = safe[2][3];
+	safe[2][3] = temp;
 
-	// Rotate third row 3 columns to right
-	temp = state[3][0];
-	state[3][0] = state[3][1];
-	state[3][1] = state[3][2];
-	state[3][2] = state[3][3];
-	state[3][3] = temp;
+	temp = safe[3][0];
+	safe[3][0] = safe[3][1];
+	safe[3][1] = safe[3][2];
+	safe[3][2] = safe[3][3];
+	safe[3][3] = temp;
 
 	
 }
@@ -68,9 +61,6 @@ void DecryptionService::execute()
 {
 	addRoundKey(numberOfRounds);
 
-	// There will be numberOfRounds rounds.
-	// The first numberOfRounds-1 rounds are identical.
-	// These numberOfRounds-1 rounds are executed in the loop below.
 	for (auto round = numberOfRounds - 1; round > 0; round--)
 	{
 		shiftRows();
@@ -79,8 +69,6 @@ void DecryptionService::execute()
 		mixColumns();
 	}
 
-	// The last round is given below.
-	// The MixColumns function is not here in the last round.
 	shiftRows();
 	subBytes();
 	addRoundKey(0);
@@ -89,7 +77,6 @@ void DecryptionService::execute()
 
 DecryptionService* DecryptionService::getInstance()
 {
-	
 	static DecryptionService *instance;
 	if (instance == nullptr) instance = new DecryptionService;
 	return instance;

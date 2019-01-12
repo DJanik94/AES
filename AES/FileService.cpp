@@ -22,11 +22,15 @@ FileService::~FileService()
 {
 }
 
-std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::string key_file_name)
+void FileService::loadFiles(Key& key, Text& text)
 {
+	loadText(text);
+	loadKey(key);
+}
 
-	//Load text
-	std::ifstream textFile(text_file_name.c_str(), std::ios::binary);
+void FileService::loadText(Text& text)
+{
+	std::ifstream textFile(configuration->getSourceFilePath().c_str(), std::ios::binary);
 	textFile.seekg(0, std::ios::end);
 	const int text_size = textFile.tellg();
 	textFile.seekg(0, std::ios::beg);
@@ -34,10 +38,12 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 	text_content[text_size] = 0x00;
 	textFile.read(reinterpret_cast<char*>(text_content), text_size);
 	textFile.close();
-	auto* text = new Text(text_content, text_size, text_file_name);
+	text.setText(text_content, text_size, configuration->getSourceFilePath());
+}
 
-	//Load key
-	std::ifstream keyFile(key_file_name.c_str(), std::ios::binary);
+void FileService::loadKey(Key& key)
+{
+	std::ifstream keyFile(configuration->getKeyFilePath().c_str(), std::ios::binary);
 	keyFile.seekg(0, std::ios::end);
 	const int key_size = keyFile.tellg();
 	keyFile.seekg(0, std::ios::beg);
@@ -45,12 +51,9 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 	key_content[key_size] = 0x00;
 	keyFile.read(reinterpret_cast<char*>(key_content), key_size);
 	keyFile.close();
-
-	auto* key = new Key(key_content, key_size);
-
-	return std::make_tuple(text, key);
+	key.setSize(key_size);
+	key.setContent(key_content);
 }
-
 
 
 void FileService::saveFile(byte* content, std::string file_name, int file_size) const

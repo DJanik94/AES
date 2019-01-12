@@ -9,15 +9,18 @@
 class FileService
 {
 	FileService();
-	//int size;
 	byte* content;
 	std::string fileName;
 	Configuration* configuration;
 
+	void loadText(Text& text);
+	void loadKey(Key& key);
+
 public:
 	static FileService& getInstance();
 	~FileService();
-	std::tuple<Text*, Key*> loadFiles(std::string text_file_name, std::string key_file_name);
+
+	void loadFiles(Key& key, Text& text);
 	void saveFile(byte* content, std::string file_name, int file_size) const;
 	std::tuple<bool, int, Method, std::string, std::string, std::string> loadSettings();
 };

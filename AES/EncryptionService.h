@@ -1,6 +1,4 @@
 ﻿#pragma once
-//#include "Types.h"
-//#include <tuple>
 #include "AesBase.h"
 
 class Key;

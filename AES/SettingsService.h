@@ -10,10 +10,19 @@ class SettingsService
 	Key* key_;
 	Configuration *configuration;
 	SettingsService();
+	void loadConfigurationFromConsole();
+	void loadNumberOfThreads();
+	void loadInputPath();
+	void loadKeyPath();
+	void loadOutPath();
+	void loadMethod();
+	void loadMode();
+	void loadFromConfFile();
 
 public:
 	static SettingsService& getInstance();
 	void load(Key& key, Text& text);
+
 	~SettingsService();
 };
 

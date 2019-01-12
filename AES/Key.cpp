@@ -10,16 +10,7 @@ Key::Key()
 
 Key::Key(byte* content, int size)
 {
-	if (!(size == 16 || size == 24 || size == 32)) throw std::exception("Nieprawidlowy rozmiar klucza");
-	int n = 0;
-	for(auto i=0; i<4; i++)
-	{
-		for (auto j = 0; j < 4; j++)
-		{
-			this->content[i][j] = content[n];
-			n++;
-		}
-	}
+	setContent(content);
 	this->size = size;
 }
 
@@ -93,6 +84,25 @@ void Key::prepareRoundKeys()
 int Key::getSize()
 {
 	return size;
+}
+
+void Key::setSize(int size)
+{
+	this->size = size;
+}
+
+void Key::setContent(byte* content)
+{
+	if (!(size == 16 || size == 24 || size == 32)) throw std::exception("Nieprawidlowy rozmiar klucza");
+	int n = 0;
+	for (auto i = 0; i < 4; i++)
+	{
+		for (auto j = 0; j < 4; j++)
+		{
+			this->content[i][j] = content[n];
+			n++;
+		}
+	}
 }
 
 Key::~Key()

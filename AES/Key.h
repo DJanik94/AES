@@ -14,6 +14,8 @@ public:
 	byte getRoundKeyValue(int i, int j);
 	void prepareRoundKeys();
 	int getSize();
+	void setSize(int size);
+	void setContent(byte* content);
 	~Key();
 };
 

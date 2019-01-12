@@ -27,3 +27,10 @@ int Text::getSize()
 {
 	return size;
 }
+
+void Text::setText(byte* content, int size, std::string filename)
+{
+	this->content = content;
+	this->size = size;
+	this->fileName = filename;
+}
