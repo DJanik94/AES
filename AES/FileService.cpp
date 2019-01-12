@@ -56,11 +56,12 @@ std::tuple<Text*, Key*> FileService::loadFiles(std::string text_file_name, std::
 void FileService::saveFile(byte* content, std::string file_name, int file_size) const
 {
 	std::ofstream file(file_name.c_str(), std::ios::binary);
-	std::string contentString = ((char*)content);
-	file.write(contentString.c_str(), contentString.size());
+	//std::string contentString = ((char*)content);
+	file.write((char*)content, file_size);
 	file.close();
 	std::cout << "Zakonczono" << std::endl;
 }
+
 
 std::tuple<bool, int, Method,  std::string, std::string, std::string> FileService::loadSettings()
 {

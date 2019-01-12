@@ -109,6 +109,7 @@
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <AdditionalIncludeDirectories>C:\Program Files\Microsoft HPC Pack 2012\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

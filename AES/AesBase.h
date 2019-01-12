@@ -14,12 +14,14 @@
 
 class AesBase
 {
+public:
+	static byte* output;
+	static byte state[4][4];
+
 protected:
 	Key* key=nullptr;
-	byte state[4][4];
 	byte round_key[4][60];
 	int numberOfRounds;
-	byte* output;
 	void addRoundKey(int round);
 	void loadBlock(Text& input, int blockNumber);
 	void saveBlock(int blockNumber);
