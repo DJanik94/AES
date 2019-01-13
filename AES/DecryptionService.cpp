@@ -1,7 +1,7 @@
 ﻿#include "DecryptionService.h"
 #include "AESLookupTable.h"
 
-void DecryptionService::mixColumns()
+void DecryptionService::mixColumns(byte(&safe)[4][4])
 {
 	byte a, b, c, d;
 	for (int i = 0; i < 4; i++)
@@ -18,7 +18,7 @@ void DecryptionService::mixColumns()
 	}
 }
 
-void DecryptionService::subBytes()
+void DecryptionService::subBytes(byte(&safe)[4][4])
 {
 	for (auto i = 0; i < 4; i++)
 	{
@@ -29,7 +29,7 @@ void DecryptionService::subBytes()
 	}	
 }
 
-void DecryptionService::shiftRows()
+void DecryptionService::shiftRows(byte(&safe)[4][4])
 {
 	byte temp;
 
@@ -56,22 +56,22 @@ void DecryptionService::shiftRows()
 	
 }
 
-void DecryptionService::execute()
+void DecryptionService::execute(byte(&safe)[4][4])
 
 {
-	addRoundKey(numberOfRounds);
+	addRoundKey(numberOfRounds,  safe);
 
 	for (auto round = numberOfRounds - 1; round > 0; round--)
 	{
-		shiftRows();
-		subBytes();
-		addRoundKey(round);
-		mixColumns();
+		shiftRows(safe);
+		subBytes(safe);
+		addRoundKey(round, safe);
+		mixColumns(safe);
 	}
 
-	shiftRows();
-	subBytes();
-	addRoundKey(0);
+	shiftRows(safe);
+	subBytes(safe);
+	addRoundKey(0, safe);
 
 }
 

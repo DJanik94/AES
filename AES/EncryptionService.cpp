@@ -10,7 +10,7 @@ EncryptionService* EncryptionService::getInstance()
 	return encryptionService;
 }
 
-void EncryptionService::mixColumns()
+void EncryptionService::mixColumns(byte(&safe)[4][4])
 {
 	int i;
 	byte Tmp, Tm, t;
@@ -24,7 +24,7 @@ void EncryptionService::mixColumns()
 	}
 }
 
-void EncryptionService::subBytes()
+void EncryptionService::subBytes(byte(&safe)[4][4])
 {
 	int i, j;
 	for (i = 0; i < 4; i++) {
@@ -34,7 +34,7 @@ void EncryptionService::subBytes()
 	}
 }
 
-void EncryptionService::shiftRows()
+void EncryptionService::shiftRows(byte(&safe)[4][4])
 {
 	byte temporary;
 
@@ -59,21 +59,21 @@ void EncryptionService::shiftRows()
 	safe[3][1] = temporary;
 }
 
-void EncryptionService::execute()
+void EncryptionService::execute(byte(&safe)[4][4])
 {
-	addRoundKey(0);
+	addRoundKey(0, safe);
 
 	for (auto round = 1; round<numberOfRounds; round++)
 	{
-		subBytes();
-		shiftRows();
-		mixColumns();
-		addRoundKey(round);
+		subBytes(safe);
+		shiftRows(safe);
+		mixColumns(safe);
+		addRoundKey(round, safe);
 	}
 
-	subBytes();
-	shiftRows();
-	addRoundKey(numberOfRounds);
+	subBytes(safe);
+	shiftRows(safe);
+	addRoundKey(numberOfRounds, safe);
 }
 
 

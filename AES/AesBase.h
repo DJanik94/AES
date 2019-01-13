@@ -12,20 +12,20 @@ class AesBase
 {
 public:
 	static byte* output;
-	static byte safe[4][4];
+	static byte safe_[4][4];
 
 protected:
 	Key* key=nullptr;
 	byte round_key[4][60];
 	int numberOfRounds;
-	void addRoundKey(int round);
-	void loadBlock(Text& input, int blockNumber);
-	void saveBlock(int blockNumber);
+	void addRoundKey(int round, byte (&safe)[4][4]);
+	void loadBlock(Text& input, int blockNumber, byte (&safe)[4][4]);
+	void saveBlock(int blockNumber, byte(&safe)[4][4]);
 
 public:
 	AesBase();
 	~AesBase();
-	virtual void execute() = 0;
+	virtual void execute(byte (&safe)[4][4]) = 0;
 	std::tuple<byte*, int> proceed(Key& key, Text& text, int numberOfThreads, Method method);
 
 private:

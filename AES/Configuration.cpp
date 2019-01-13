@@ -69,7 +69,7 @@ void Configuration::setMethod(Method method)
 void Configuration::setDefaultConfiguration()
 {
 	keyFilePath = "Files/key.txt";
-	numberOfThreads = 1;
+	numberOfThreads = 3;
 	method = Method::OMP;
 	if (mode)
 	{

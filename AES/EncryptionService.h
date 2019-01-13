@@ -8,10 +8,10 @@ class EncryptionService : public AesBase
 {
 public:
 	static EncryptionService* getInstance();
-	void execute() override;
+	void execute(byte(&safe)[4][4]) override;
 
 private:
-	void mixColumns();
-	void subBytes();
-	void shiftRows();
+	void mixColumns(byte(&safe)[4][4]);
+	void subBytes(byte(&safe)[4][4]);
+	void shiftRows(byte(&safe)[4][4]);
 };

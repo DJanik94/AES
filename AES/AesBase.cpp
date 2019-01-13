@@ -11,7 +11,7 @@ int globalArgC;
 char **globalArgV;
 
 byte* AesBase::output;
-byte AesBase::safe[4][4];
+byte AesBase::safe_[4][4];
 
 std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThreads, Method method)
 {
@@ -61,7 +61,7 @@ void AesBase::prepareData(Key& key, Text& text, int& output_size, int& numberOfB
 	currentBlock = 0;
 }
 
-void AesBase::addRoundKey(int round)
+void AesBase::addRoundKey(int round, byte(&safe)[4][4])
 {
 	int i, j;
 	for (i = 0; i < 4; i++) {
@@ -72,7 +72,7 @@ void AesBase::addRoundKey(int round)
 	}
 }
 
-void AesBase::loadBlock(Text& input, int block_num)
+void AesBase::loadBlock(Text& input, int block_num, byte(&safe)[4][4])
 {
 	int byte_num = 16 * block_num;
 	for (int i = 0; i < 4; i++)
@@ -81,7 +81,7 @@ void AesBase::loadBlock(Text& input, int block_num)
 		{
 			if (byte_num < input.getSize())
 			{
-				safe[i][j] = input.getByte(byte_num);
+				(safe)[i][j] = input.getByte(byte_num);
 				byte_num++;
 			}
 			else
@@ -93,7 +93,7 @@ void AesBase::loadBlock(Text& input, int block_num)
 	}
 }
 
-void AesBase::saveBlock(int block_num)
+void AesBase::saveBlock(int block_num, byte(&safe)[4][4])
 {
 	int byte_number = block_num * 16;
 
@@ -107,12 +107,13 @@ void AesBase::saveBlock(int block_num)
 
 void AesBase::doSequence(Text& text, const int numberOfBlocks, int& currentBlock)
 {
+	byte tmpBlock[4][4];
 	while (currentBlock < numberOfBlocks)
 	{
-		loadBlock(text, currentBlock);
-		execute();
-		saveBlock(currentBlock);
-		++currentBlock;
+		//byte tmpBlock[4][4];
+		loadBlock(text, currentBlock, tmpBlock);
+		execute(tmpBlock);
+		saveBlock(currentBlock, tmpBlock);
 	}
 }
 
@@ -122,12 +123,15 @@ void AesBase::doOpenMP(Text& text, int numberOfThreads, const int numberOfBlocks
 	Configuration configuration = Configuration::getInstance();
 	bool mode = configuration.isMode();
 	omp_set_num_threads(numberOfThreads);
-#pragma omp parallel for private(safe) 
+	byte tmpBlock[4][4];
+#pragma omp parallel for private(tmpBlock) 
 	for(int currentBlock = 0; currentBlock <numberOfBlocks; currentBlock++)
 	{
-		loadBlock(text, currentBlock);
-		execute();
-		saveBlock(currentBlock);
+		//byte tmpBlock[4][4];
+		loadBlock(text, currentBlock, tmpBlock);
+		int g = 0;
+		execute(tmpBlock);
+		saveBlock(currentBlock, tmpBlock);
 	}
 }
 
@@ -140,13 +144,14 @@ void AesBase::doMPI(Text& text, const int numberOfBlocks, int& currentBlock)
 	MPI_Init(&globalArgC, &globalArgV);
 	//MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
 	//MPI_Comm_size(MPI_COMM_WORLD, &p);
-
+	byte tmpBlock[4][4];
 	for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
 	{
+		//byte tmpBlock[4][4];
 		std::cout << "Daj znak zycia" << std::endl;
-		loadBlock(text, currentBlock);
-		execute();
-		saveBlock(currentBlock);
+		loadBlock(text, currentBlock, tmpBlock);
+		execute(tmpBlock);
+		saveBlock(currentBlock, tmpBlock);
 	}
 
 	//std::cout << myRank << std::endl;
