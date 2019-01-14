@@ -6,6 +6,7 @@
 #include "SystemInformation.h"
 #include <chrono>
 #include "Configuration.h"
+#include "FileService.h"
 
 int globalArgC;
 char **globalArgV;
@@ -37,7 +38,7 @@ std::tuple<byte*, int> AesBase::proceed(Key& key, Text& text, int numberOfThread
 		}
 		case Method::MPI:
 		{
-			doMPI(text, numberOfBlocks, currentBlock);
+			doMPI(text, numberOfBlocks, currentBlock,output_size);
 			break;
 		}
 	}
@@ -135,29 +136,49 @@ void AesBase::doOpenMP(Text& text, int numberOfThreads, const int numberOfBlocks
 	}
 }
 
-void AesBase::doMPI(Text& text, const int numberOfBlocks, int& currentBlock)
+void AesBase::doMPI(Text& text, const int numberOfBlocks, int& currentBlock, int outputSize)
 {
-	int myRank, p;
+	int id, numberOfProcesses;
 	SystemInformation systemInformation = SystemInformation::getInstance();
 	int globalArgC = systemInformation.getGlobalArgC();
 	char** globalArgV = systemInformation.getGlobalArgV();
-	MPI_Init(&globalArgC, &globalArgV);
-	//MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-	//MPI_Comm_size(MPI_COMM_WORLD, &p);
 	byte tmpBlock[4][4];
-	for (currentBlock = 0; currentBlock < numberOfBlocks; currentBlock++)
+	MPI_Init(&globalArgC, &globalArgV);
+	MPI_Comm_rank(MPI_COMM_WORLD, &id);
+	MPI_Comm_size(MPI_COMM_WORLD, &numberOfProcesses);
+	MPI_Status status;
+	while (currentBlock < numberOfBlocks)
 	{
-		//byte tmpBlock[4][4];
-		std::cout << "Daj znak zycia" << std::endl;
-		loadBlock(text, currentBlock, tmpBlock);
-		execute(tmpBlock);
-		saveBlock(currentBlock, tmpBlock);
+		if (currentBlock % numberOfProcesses == id)
+		{
+			loadBlock(text, currentBlock, tmpBlock);
+			execute(tmpBlock);
+			saveBlock(currentBlock, tmpBlock);
+			if (id != 0)
+			{
+				for (int i = 0 ; i < 4 ; i++)
+					for (int j = 0; j < 4; j++)
+						MPI_Send(&tmpBlock[i][j], 1, MPI_BYTE, 0, currentBlock, MPI_COMM_WORLD);
+			}
+		}
+		else if (id == 0 && numberOfProcesses > 1)
+		{
+			for (int i = 0; i < 4; i++)
+				for (int j = 0; j < 4; j++)
+					MPI_Recv(&tmpBlock[i][j], 1, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+			saveBlock(status.MPI_TAG, tmpBlock);
+		}
+		currentBlock++;
 	}
 
-	//std::cout << myRank << std::endl;
-	//std::cout << p << std::endl;
-
+	if (id == 0)
+	{
+		FileService* fileService = &FileService::getInstance();
+		Configuration* configuration = &Configuration::getInstance();
+		fileService->saveFile(output, configuration->getOutputFilePath(), outputSize);
+	}
 	MPI_Finalize();
+	exit(0);
 }
 
 AesBase::AesBase()

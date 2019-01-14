@@ -31,6 +31,6 @@ public:
 private:
 	void doSequence(Text& text, int numberOfBlocks, int& currentBlock);
 	void doOpenMP(Text& text, int numberOfThreads, int numberOfBlocks, int currentBlock);
-	void doMPI(Text& text, int numberOfBlocks, int& currentBlock);
+	void doMPI(Text& text, int numberOfBlocks, int& currentBlock, int outputSize);
 	void prepareData(Key& key, Text& text, int& output_size, int& numberOfBlocks, int& currentBlock);
 };

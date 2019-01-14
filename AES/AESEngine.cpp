@@ -12,6 +12,7 @@ AESEngine::AESEngine()
 
 void AESEngine::start()
 {
+	configuration->setDefaultConfiguration();
 	settingsService->load(key,text);
 	key.prepareRoundKeys();
 	AesBase* service;

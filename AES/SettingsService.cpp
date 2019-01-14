@@ -85,24 +85,27 @@ void SettingsService::loadMethod()
 
 void SettingsService::load(Key& key, Text& text)
 {
-	int choice;
-	std::cout << "1 - Konfiguracja domyslna, 2 - Z pliku \"Files/conf.txt\" 3 - podaj parametry" << std::endl;
-	cin >> choice;
-
-	switch (choice)
+	if (configuration->getMethod() != MPI)
 	{
-	case 1:
-		loadMode();
-		break;
+		int choice;
+		std::cout << "1 - Konfiguracja domyslna, 2 - Z pliku \"Files/conf.txt\" 3 - podaj parametry" << std::endl;
+		cin >> choice;
 
-	case 2:
-		loadFromConfFile();
-		break;
-	case 3:
-		loadConfigurationFromConsole();
-		break;
-	default:
-		configuration->setDefaultConfiguration();
+		switch (choice)
+		{
+		case 1:
+			loadMode();
+			break;
+
+		case 2:
+			loadFromConfFile();
+			break;
+		case 3:
+			loadConfigurationFromConsole();
+			break;
+		default:
+			configuration->setDefaultConfiguration();
+		}
 	}
 
 	fileService->loadFiles(key, text);
