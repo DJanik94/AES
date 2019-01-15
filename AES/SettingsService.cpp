@@ -31,8 +31,6 @@ void SettingsService::loadMode()
 	bool mode;
 	std::cout << "Wybierz tryb: 0-deszyfrowanie, 1-szyfrowanie" << std::endl;
 	std::cin >> mode;
-	configuration->setMode(mode);
-	configuration->setDefaultConfiguration();
 }
 
 void SettingsService::loadFromConfFile()
@@ -94,7 +92,7 @@ void SettingsService::load(Key& key, Text& text)
 		switch (choice)
 		{
 		case 1:
-			loadMode();
+			configuration->setDefaultConfiguration();
 			break;
 
 		case 2:

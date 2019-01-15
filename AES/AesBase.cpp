@@ -67,7 +67,6 @@ void AesBase::addRoundKey(int round, byte(&safe)[4][4])
 	int i, j;
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {
-
 			safe[i][j] ^= key->getRoundKeyValue(i, round * 4 + j);
 		}
 	}
@@ -111,26 +110,21 @@ void AesBase::doSequence(Text& text, const int numberOfBlocks, int& currentBlock
 	byte tmpBlock[4][4];
 	while (currentBlock < numberOfBlocks)
 	{
-		//byte tmpBlock[4][4];
 		loadBlock(text, currentBlock, tmpBlock);
 		execute(tmpBlock);
 		saveBlock(currentBlock, tmpBlock);
+		currentBlock++;
 	}
 }
 
 void AesBase::doOpenMP(Text& text, int numberOfThreads, const int numberOfBlocks, int currentBlock)
 {
-	//int tmpNumberOfThreads;
-	Configuration configuration = Configuration::getInstance();
-	bool mode = configuration.isMode();
 	omp_set_num_threads(numberOfThreads);
 	byte tmpBlock[4][4];
 #pragma omp parallel for private(tmpBlock) 
 	for(int currentBlock = 0; currentBlock <numberOfBlocks; currentBlock++)
 	{
-		//byte tmpBlock[4][4];
 		loadBlock(text, currentBlock, tmpBlock);
-		int g = 0;
 		execute(tmpBlock);
 		saveBlock(currentBlock, tmpBlock);
 	}
@@ -146,7 +140,10 @@ void AesBase::doMPI(Text& text, const int numberOfBlocks, int& currentBlock, int
 	MPI_Init(&globalArgC, &globalArgV);
 	MPI_Comm_rank(MPI_COMM_WORLD, &id);
 	MPI_Comm_size(MPI_COMM_WORLD, &numberOfProcesses);
+	std::chrono::time_point<std::chrono::steady_clock> start;
 	MPI_Status status;
+	if (id == 0)
+		start = std::chrono::high_resolution_clock::now();
 	while (currentBlock < numberOfBlocks)
 	{
 		if (currentBlock % numberOfProcesses == id)
@@ -161,18 +158,24 @@ void AesBase::doMPI(Text& text, const int numberOfBlocks, int& currentBlock, int
 						MPI_Send(&tmpBlock[i][j], 1, MPI_BYTE, 0, currentBlock, MPI_COMM_WORLD);
 			}
 		}
-		else if (id == 0 && numberOfProcesses > 1)
-		{
-			for (int i = 0; i < 4; i++)
-				for (int j = 0; j < 4; j++)
-					MPI_Recv(&tmpBlock[i][j], 1, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-			saveBlock(status.MPI_TAG, tmpBlock);
-		}
 		currentBlock++;
 	}
-
 	if (id == 0)
 	{
+		for (int k = 0; k < (numberOfBlocks - numberOfBlocks / numberOfProcesses) - 1; k++)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = 0; j < 4; j++)
+				{
+					MPI_Recv(&tmpBlock[i][j], 1, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+				}
+			}
+			saveBlock(status.MPI_TAG, tmpBlock);
+		}
+		auto finish = std::chrono::high_resolution_clock::now();
+		auto elapsed = (finish - start) / 1000000000;
+		std::cout << "Czas wykonania: " << elapsed.count() << std::endl;
 		FileService* fileService = &FileService::getInstance();
 		Configuration* configuration = &Configuration::getInstance();
 		fileService->saveFile(output, configuration->getOutputFilePath(), outputSize);

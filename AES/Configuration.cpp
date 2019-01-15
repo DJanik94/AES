@@ -69,9 +69,9 @@ void Configuration::setMethod(Method method)
 void Configuration::setDefaultConfiguration()
 {
 	keyFilePath = "Files/key.txt";
-	numberOfThreads = 3;
+	numberOfThreads = 8;
 	method = Method::MPI;
-	mode = false;
+	mode = true;
 	if (mode)
 	{
 		sourceFilePath = "Files/text.txt";

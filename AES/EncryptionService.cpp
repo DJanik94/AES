@@ -17,9 +17,15 @@ void EncryptionService::mixColumns(byte(&safe)[4][4])
 	for (i = 0; i < 4; i++) {
 		t = safe[0][i];
 		Tmp = safe[0][i] ^ safe[1][i] ^ safe[2][i] ^ safe[3][i];
-		Tm = safe[0][i] ^ safe[1][i]; Tm = xtime(Tm); safe[0][i] ^= Tm ^ Tmp;
-		Tm = safe[1][i] ^ safe[2][i]; Tm = xtime(Tm); safe[1][i] ^= Tm ^ Tmp;
-		Tm = safe[2][i] ^ safe[3][i]; Tm = xtime(Tm); safe[2][i] ^= Tm ^ Tmp;
+		Tm = safe[0][i] ^ safe[1][i];
+		Tm = xtime(Tm);
+		safe[0][i] ^= Tm ^ Tmp;
+		Tm = safe[1][i] ^ safe[2][i];
+		Tm = xtime(Tm);
+		safe[1][i] ^= Tm ^ Tmp;
+		Tm = safe[2][i] ^ safe[3][i];
+		Tm = xtime(Tm);
+		safe[2][i] ^= Tm ^ Tmp;
 		Tm = safe[3][i] ^ t; Tm = xtime(Tm); safe[3][i] ^= Tm ^ Tmp;
 	}
 }

@@ -27,46 +27,33 @@ void Key::prepareRoundKeys()
 	int numberOfAESRounds = keyLengthIn32BitWords + 6;
 	byte temp[4], k;
 
-	// The first round key is the key itself.
 	for (i = 0; i < 4; i++) {
 		for (j = 0; j < 4; j++) {
 			roundKey[i][j] = content[i][j];
 		}
 	}
 
-	while (j < ((numberOfAESRounds+1) * 4)) {//Dodane =
-
-		// Copying the previous column
+	while (j < ((numberOfAESRounds+1) * 4)) {
 		for (i = 0; i < 4; i++) {
 			temp[i] = roundKey[i][j - 1];
 		}
 
 		if (i % keyLengthIn32BitWords == 0) {
-			// This function rotates the 4 bytes in a word to the left once.
-			// [a0,a1,a2,a3] becomes [a1,a2,a3,a0]
-
-			// Function RotWord()
 			k = temp[0];
 			temp[0] = temp[1];
 			temp[1] = temp[2];
 			temp[2] = temp[3];
 			temp[3] = k;
 
-			// SubWord() is a function that takes a four-byte input word and 
-			// applies the S-box to each of the four bytes to produce an output word.
-
-			// Function Subword()
 			temp[0] = AESLookupTable::getSBoxValue(temp[0]);
 			temp[1] = AESLookupTable::getSBoxValue(temp[1]);
 			temp[2] = AESLookupTable::getSBoxValue(temp[2]);
 			temp[3] = AESLookupTable::getSBoxValue(temp[3]);
 
-			// Column XOR round constant
 			temp[0] = temp[0] ^ roundConstant[i / keyLengthIn32BitWords];
 		}
 
 		else if (keyLengthIn32BitWords > 6 && i % keyLengthIn32BitWords == 4) {
-			// Function Subword()
 			temp[0] = AESLookupTable::getSBoxValue(temp[0]);
 			temp[1] = AESLookupTable::getSBoxValue(temp[1]);
 			temp[2] = AESLookupTable::getSBoxValue(temp[2]);
