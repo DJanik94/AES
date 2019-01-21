@@ -5,8 +5,8 @@
 #include <tuple>
 #include "Method.h"
 
-#define xtime(x)   ((x<<1) ^ (((x>>7) & 1) * 0x1b))
-#define propagate(x,y) (((y & 1) * x) ^ ((y>>1 & 1) * xtime(x)) ^ ((y>>2 & 1) * xtime(xtime(x))) ^ ((y>>3 & 1) * xtime(xtime(xtime(x)))) ^ ((y>>4 & 1) * xtime(xtime(xtime(xtime(x))))))
+#define tx(x)   ((x<<1) ^ (((x>>7) & 1) * 0x1b))
+#define propagate(x,y) (((y & 1) * x) ^ ((y>>1 & 1) * tx(x)) ^ ((y>>2 & 1) * tx(tx(x))) ^ ((y>>3 & 1) * tx(tx(tx(x)))) ^ ((y>>4 & 1) * tx(tx(tx(tx(x))))))
 
 class AesBase
 {
